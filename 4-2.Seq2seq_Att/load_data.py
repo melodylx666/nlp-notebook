@@ -2,8 +2,11 @@
 import torch
 import jieba
 from torchtext.legacy import data
-
+import os
 device = "cuda" if torch.cuda.is_available() else 'cpu'
+
+current_dir = os.path.dirname(__file__)
+data_path = os.path.join(current_dir, 'data')
 
 def tokenizer(text):
     token = [tok for tok in jieba.cut(text)]
@@ -16,9 +19,9 @@ TEXT = data.Field(tokenize=tokenizer,
                   batch_first = True)
 
 train, val = data.TabularDataset.splits(
-        path='./data/', 
-        train='train.tsv',
-        validation='dev.tsv',
+        path= data_path, 
+        train='train_processed.tsv',
+        validation='dev_processed.tsv',
         format='tsv',
         skip_header=True,
         fields=[('trg', TEXT), ('src', TEXT)])
@@ -34,6 +37,6 @@ EOS_IDX = vocab2id[TEXT.eos_token]
 #train_iter 自动shuffle, val_iter 按照sort_key排序
 train_iter, val_iter = data.BucketIterator.splits(
         (train, val),
-        batch_sizes=(256, 256),
+        batch_sizes=(32, 32),
         sort_key=lambda x: len(x.src),
         device=device)
