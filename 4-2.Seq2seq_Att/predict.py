@@ -8,10 +8,10 @@ device = "cuda" if torch.cuda.is_available() else 'cpu'
 
 INPUT_DIM = len(id2vocab)
 OUTPUT_DIM = len(id2vocab)
-ENC_EMB_DIM = 256
-DEC_EMB_DIM = 256
-ENC_HID_DIM = 512
-DEC_HID_DIM = 512
+ENC_EMB_DIM = 64
+DEC_EMB_DIM = 64
+ENC_HID_DIM = 128
+DEC_HID_DIM = 128
 ENC_DROPOUT = 0.5
 DEC_DROPOUT = 0.5
 
@@ -23,7 +23,7 @@ model = Seq2Seq(enc, dec, device).to(device)
 model.load_state_dict(torch.load('model.pt'))
 model.eval()
 
-text = '中新网9月19日电据英国媒体报道,当地时间19日,苏格兰公投结果出炉,55%选民投下反对票,对独立说“不”。在结果公布前,英国广播公司(BBC)预测,苏格兰选民以55%对45%投票反对独立。'
+text = '曝阿汤哥通过好友贝克汉姆'
 tokens = [tok for tok in jieba.cut(text)]
 tokens_idx = [SOS_IDX] + [vocab2id.get(word, UNK_IDX) for word in tokens] + [EOS_IDX]
 tokens_idx = torch.tensor(tokens_idx)
